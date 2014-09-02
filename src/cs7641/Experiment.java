@@ -22,7 +22,7 @@ public abstract class Experiment {
     private int iterationsSinceBest = 0;
     private Evaluation bestTrain;
     private Evaluation bestTest;
-    private int bestTestTime;
+    private double bestTestTime;
 
     public abstract List<Classifier> getClassifiers();
 
@@ -96,7 +96,7 @@ public abstract class Experiment {
                                     Evaluation foo = new Evaluation(train);
                                     foo.evaluateModel(mmp, train);
                                     long end = System.currentTimeMillis();
-                                    bestTestTime += (end - start) / (double) 1000;
+                                    bestTestTime = (end - start) / (double) 1000;
                                     bestTrain = foo;
                                     iterationsSinceBest = 0;
                                     return false;

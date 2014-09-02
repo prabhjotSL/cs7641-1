@@ -31,7 +31,7 @@ public class ANNIterationsWatcher {
 
         final FileWriter w = new FileWriter(new File(name + ".tsv"));
 
-        cls.setTrainingTime(5000);
+        cls.setTrainingTime(1500);
         cls.setEpochCallback(new ModifiedMultilayerPerceptron.EpochCallback() {
             @Override
             public boolean epochFinished(int epoch) {
@@ -46,7 +46,7 @@ public class ANNIterationsWatcher {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return epoch > 5000;
+                return epoch > 1500;
             }
         });
 
