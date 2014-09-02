@@ -16,8 +16,8 @@ public class ANNExperimenter extends Experiment {
     public static ModifiedMultilayerPerceptron getBestAdult() {
         ModifiedMultilayerPerceptron best = new ModifiedMultilayerPerceptron();
         best.setLearningRate(0.3);
-        best.setMomentum(0.3);
-        best.setHiddenLayers("32");
+        best.setMomentum(0.2);
+        best.setHiddenLayers("64");
         return best;
     }
 

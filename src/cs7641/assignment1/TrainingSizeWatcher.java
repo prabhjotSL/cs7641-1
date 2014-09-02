@@ -22,7 +22,7 @@ public class TrainingSizeWatcher {
         adultClassifiers.add(KNNExperimenter.getBestAdult());
         adultClassifiers.add(SVMExperimenter.getBestAdult());
 
-//        watch("adult-train-size", adultFile, adultClassifiers);
+        watch("adult-train-size", adultFile, adultClassifiers);
 
         File semeionFile = new File("datasets/semeion.arff");
 
