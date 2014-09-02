@@ -1,4 +1,0 @@
-Kernel	trainPctCorrect	testPctCorrect	trainTime	testTime
-PolyKernel	84.77	84.22	7.14	0.01
-RBFKernel	82.57	82.33	42.01	2.00
-NormalizedPolyKernel	84.21	83.58	36.05	2.29

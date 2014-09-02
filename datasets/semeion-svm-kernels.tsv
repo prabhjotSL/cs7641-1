@@ -1,4 +1,7 @@
-Kernel	trainPctCorrect	testPctCorrect	trainTime	testTime
-PolyKernel	100.00	93.35	0.60	0.02
-RBFKernel	99.04	94.16	0.88	1.66
-NormalizedPolyKernel	99.60	94.98	1.14	2.36
+Kernel	Exponent	trainPctCorrect	testPctCorrect	trainTime	testTime
+RBFKernel	0.0	99.04	94.16	3.86	7.69
+NormalizedPolyKernel	2.0	99.60	94.98	3.45	7.24
+PolyKernel	0.0	10.80	8.16	5.31	9.00
+PolyKernel	1.0	100.00	93.35	2.41	0.27
+PolyKernel	2.0	100.00	94.98	3.45	3.57
+PolyKernel	3.0	100.00	94.48	3.32	3.79

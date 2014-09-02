@@ -1821,7 +1821,7 @@ public class ModifiedMultilayerPerceptron
         return result;
     }
 
-    interface EpochCallback {
+    public interface EpochCallback {
         public boolean epochFinished(int epoch);
     }
 

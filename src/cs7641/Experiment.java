@@ -23,7 +23,6 @@ public abstract class Experiment {
     private Evaluation bestTrain;
     private Evaluation bestTest;
     private int bestTestTime;
-    private int bestTrainTime;
 
     public abstract List<Classifier> getClassifiers();
 
@@ -33,7 +32,7 @@ public abstract class Experiment {
 
     public abstract String getName();
 
-    public void run(int folds) throws Exception {
+    public File getFile() {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("ARFF", "arff");
         chooser.setFileFilter(filter);
@@ -42,15 +41,19 @@ public abstract class Experiment {
         if (returnVal != JFileChooser.APPROVE_OPTION)
             System.exit(0);
 
-        Instances data = new Instances(new FileReader(chooser.getSelectedFile()));
-        int seed = 31;
+        return chooser.getSelectedFile();
+    }
 
-        int its = 1;//folds;
+    public void run(int folds, int its) throws Exception {
+
+        File input = getFile();
+
+        Instances data = new Instances(new FileReader(input));
+        int seed = 31;
 
         data.setClassIndex(data.numAttributes() - 1);
         data.randomize(new Random(seed));
 
-        File input = chooser.getSelectedFile();
         String baseName = input.getName().split("\\.(?=[^\\.]+$)")[0];
         File output = new File(input.getParent() + "/" + baseName + "-" + getName() + ".tsv");
         FileWriter writer = new FileWriter(output);
@@ -61,7 +64,8 @@ public abstract class Experiment {
 
         for (int c = 0; c < getClassifiers().size(); c++) {
             Classifier cls = getClassifiers().get(c);
-            System.out.println("Testing classifier " + c + " of " + getClassifiers().size());
+
+            System.out.println("Classifier " + (c + 1) + " of " + getClassifiers().size());
 
             double trainTime = 0;
             double testTime = 0;
@@ -79,6 +83,7 @@ public abstract class Experiment {
 
                 if (cls instanceof ModifiedMultilayerPerceptron) {
                     final ModifiedMultilayerPerceptron mmp = (ModifiedMultilayerPerceptron) cls;
+                    mmp.setTrainingTime(5000);
                     mmp.setEpochCallback(new ModifiedMultilayerPerceptron.EpochCallback() {
                         @Override
                         public boolean epochFinished(int epoch) {
@@ -86,24 +91,20 @@ public abstract class Experiment {
                                 Evaluation stop = new Evaluation(train);
                                 long start = System.currentTimeMillis();
                                 stop.evaluateModel(mmp, test);
-                                long end = System.currentTimeMillis();
                                 if (bestTest == null || stop.pctCorrect() > bestTest.pctCorrect()) {
                                     bestTest = stop;
-                                    bestTestTime += (end - start) / (double) 1000;
                                     Evaluation foo = new Evaluation(train);
-                                    start = System.currentTimeMillis();
-                                    foo.evaluateModel(mmp, test);
-                                    end = System.currentTimeMillis();
-                                    bestTrainTime += (end - start) / (double) 1000;
+                                    foo.evaluateModel(mmp, train);
+                                    long end = System.currentTimeMillis();
+                                    bestTestTime += (end - start) / (double) 1000;
                                     bestTrain = foo;
+                                    iterationsSinceBest = 0;
                                     return false;
-                                }
-
-                                if (iterationsSinceBest > 200) {
+                                } else if (iterationsSinceBest > 250) {
                                     return true;
+                                } else {
+                                    iterationsSinceBest++;
                                 }
-
-                                iterationsSinceBest++;
                             } catch (Exception e) {
 
                             }
@@ -121,17 +122,17 @@ public abstract class Experiment {
                     trainEvals.add(bestTrain);
                     testEvals.add(bestTest);
                     testTime += bestTestTime;
-                    trainTime += bestTrainTime;
                 } else {
-                    Evaluation testE = new Evaluation(train);
                     start = System.currentTimeMillis();
-                    testE.evaluateModel(cls, test);
-                    end = System.currentTimeMillis();
-                    testTime += (end - start) / (double) 1000;
 
+                    Evaluation testE = new Evaluation(train);
+                    testE.evaluateModel(cls, test);
                     Evaluation trainE = new Evaluation(train);
                     trainE.evaluateModel(cls, train);
 
+                    end = System.currentTimeMillis();
+
+                    testTime += (end - start) / (double) 1000;
                     testEvals.add(testE);
                     trainEvals.add(trainE);
                 }

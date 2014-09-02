@@ -10,7 +10,21 @@ import java.util.List;
 public class DecisionTreeExperimenter extends Experiment {
     public static void main(String[] args) throws Exception {
         DecisionTreeExperimenter exp = new DecisionTreeExperimenter();
-        exp.run(10);
+        exp.run(10, 10);
+    }
+
+    public static J48 getBestAdult() {
+        J48 cls = new J48();
+        cls.setUnpruned(true);
+        cls.setMinNumObj(1);
+        return cls;
+    }
+
+    public static J48 getBestSemeion() {
+        J48 cls = new J48();
+        cls.setMinNumObj(2);
+        cls.setConfidenceFactor((float)0.2);
+        return cls;
     }
 
     public List<Classifier> getClassifiers() {

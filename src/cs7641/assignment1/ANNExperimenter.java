@@ -10,7 +10,23 @@ import java.util.List;
 public class ANNExperimenter extends Experiment {
     public static void main(String[] args) throws Exception {
         ANNExperimenter e = new ANNExperimenter();
-        e.run(4);
+        e.run(4, 4);
+    }
+
+    public static ModifiedMultilayerPerceptron getBestAdult() {
+        ModifiedMultilayerPerceptron best = new ModifiedMultilayerPerceptron();
+        best.setLearningRate(0.3);
+        best.setMomentum(0.3);
+        best.setHiddenLayers("32");
+        return best;
+    }
+
+    public static ModifiedMultilayerPerceptron getBestSemeion() {
+        ModifiedMultilayerPerceptron best = new ModifiedMultilayerPerceptron();
+        best.setLearningRate(0.3);
+        best.setMomentum(0.2);
+        best.setHiddenLayers("64");
+        return best;
     }
 
     @Override
@@ -19,7 +35,7 @@ public class ANNExperimenter extends Experiment {
 
         for (int m = 2; m <= 5; m++) {
             for (int r = 3; r <= 4; r++) {
-                for (int n = 1; n <= 7; n++) {
+                for (int n = 1; n <= 6; n++) {
                     ModifiedMultilayerPerceptron ann = new ModifiedMultilayerPerceptron();
                     ann.setMomentum(m / (double)10);
                     ann.setLearningRate(r / (double)10);

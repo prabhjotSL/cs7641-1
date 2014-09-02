@@ -11,7 +11,20 @@ import java.util.List;
 public class KNNExperimenter extends Experiment {
     public static void main(String[] args) throws Exception {
         KNNExperimenter exp = new KNNExperimenter();
-        exp.run(4);
+        exp.run(4, 4);
+    }
+
+    public static IBk getBestAdult() {
+        IBk best = new IBk();
+        best.setDistanceWeighting(new SelectedTag(IBk.WEIGHT_INVERSE, IBk.TAGS_WEIGHTING));
+        best.setKNN(10);
+        return best;
+    }
+    public static IBk getBestSemeion() {
+        IBk best = new IBk();
+        best.setDistanceWeighting(new SelectedTag(IBk.WEIGHT_INVERSE, IBk.TAGS_WEIGHTING));
+        best.setKNN(6);
+        return best;
     }
 
     @Override

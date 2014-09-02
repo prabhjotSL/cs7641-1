@@ -1,0 +1,6 @@
+Classifier	trainPctCorrect	testPctCorrect	trainTime	testTime
+J48	97.61	90.92	0.15	0.00
+ModifiedMultilayerPerceptron	88.59	86.58	152.56	0.00
+SMO	84.79	84.61	15.52	0.00
+IBk	99.61	92.28	0.00	0.62
+AdaBoostM1	100.00	94.10	4.82	0.03
