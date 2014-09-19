@@ -1,6 +1,5 @@
 package cs7641.assignment1;
 
-import cs7641.Experiment;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.supportVector.Kernel;

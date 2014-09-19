@@ -1,10 +1,9 @@
-package cs7641;
+package cs7641.assignment1;
 
 import com.sun.deploy.util.StringUtils;
-import javafx.util.Pair;
+import cs7641.ann.MultilayerPerceptron;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 import javax.swing.*;
@@ -12,7 +11,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +34,7 @@ public abstract class Experiment {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("ARFF", "arff");
         chooser.setFileFilter(filter);
-        chooser.setCurrentDirectory(new File("/home/kmcintyre/cs7641/datasets"));
+        chooser.setCurrentDirectory(new File("/home/kmcintyre/src/cs7641/datasets"));
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal != JFileChooser.APPROVE_OPTION)
             System.exit(0);
@@ -81,10 +79,10 @@ public abstract class Experiment {
                 bestTest = null;
                 iterationsSinceBest = 0;
 
-                if (cls instanceof ModifiedMultilayerPerceptron) {
-                    final ModifiedMultilayerPerceptron mmp = (ModifiedMultilayerPerceptron) cls;
+                if (cls instanceof MultilayerPerceptron) {
+                    final MultilayerPerceptron mmp = (MultilayerPerceptron) cls;
                     mmp.setTrainingTime(5000);
-                    mmp.setEpochCallback(new ModifiedMultilayerPerceptron.EpochCallback() {
+                    mmp.setEpochCallback(new MultilayerPerceptron.EpochCallback() {
                         @Override
                         public boolean epochFinished(int epoch) {
                             try {
@@ -100,7 +98,7 @@ public abstract class Experiment {
                                     bestTrain = foo;
                                     iterationsSinceBest = 0;
                                     return false;
-                                } else if (iterationsSinceBest > 250) {
+                                } else if (iterationsSinceBest > 500) {
                                     return true;
                                 } else {
                                     iterationsSinceBest++;
@@ -118,7 +116,7 @@ public abstract class Experiment {
                 long end = System.currentTimeMillis();
                 trainTime += (end - start) / (double) 1000;
 
-                if (cls instanceof ModifiedMultilayerPerceptron) {
+                if (cls instanceof MultilayerPerceptron) {
                     trainEvals.add(bestTrain);
                     testEvals.add(bestTest);
                     testTime += bestTestTime;

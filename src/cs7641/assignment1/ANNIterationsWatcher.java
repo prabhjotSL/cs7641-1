@@ -1,6 +1,6 @@
 package cs7641.assignment1;
 
-import cs7641.ModifiedMultilayerPerceptron;
+import cs7641.ann.MultilayerPerceptron;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
@@ -20,7 +20,7 @@ public class ANNIterationsWatcher {
         watch("semeion-ann-its", semeionFile, ANNExperimenter.getBestSemeion());
     }
 
-    public static void watch(String name, File file, final ModifiedMultilayerPerceptron cls) throws Exception {
+    public static void watch(String name, File file, final MultilayerPerceptron cls) throws Exception {
         Instances data = new Instances(new FileReader(file));
         data.setClassIndex(data.numAttributes() - 1);
         data.randomize(new Random(31));
@@ -32,7 +32,7 @@ public class ANNIterationsWatcher {
         final FileWriter w = new FileWriter(new File(name + ".tsv"));
 
         cls.setTrainingTime(1500);
-        cls.setEpochCallback(new ModifiedMultilayerPerceptron.EpochCallback() {
+        cls.setEpochCallback(new MultilayerPerceptron.EpochCallback() {
             @Override
             public boolean epochFinished(int epoch) {
                 try {

@@ -1,6 +1,5 @@
 package cs7641.assignment1;
 
-import cs7641.Experiment;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.SelectedTag;

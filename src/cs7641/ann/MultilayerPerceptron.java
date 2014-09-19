@@ -1,11 +1,7 @@
-package cs7641;
+package cs7641.ann;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.MultilayerPerceptron;
-import weka.classifiers.functions.neural.LinearUnit;
-import weka.classifiers.functions.neural.NeuralConnection;
-import weka.classifiers.functions.neural.NeuralNode;
-import weka.classifiers.functions.neural.SigmoidUnit;
+
 import weka.core.Capabilities;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -33,10 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -125,7 +118,7 @@ import javax.swing.JTextField;
  * @author Malcolm Ware (mfw4@cs.waikato.ac.nz)
  * @version $Revision: 10073 $
  */
-public class ModifiedMultilayerPerceptron
+public class MultilayerPerceptron
         extends Classifier
         implements OptionHandler, WeightedInstancesHandler, Randomizable {
 
@@ -140,7 +133,7 @@ public class ModifiedMultilayerPerceptron
      * @param argv should contain command line options (see setOptions)
      */
     public static void main(String[] argv) {
-        runClassifier(new MultilayerPerceptron(), argv);
+        runClassifier(new weka.classifiers.functions.MultilayerPerceptron(), argv);
     }
 
 
@@ -179,6 +172,21 @@ public class ModifiedMultilayerPerceptron
             m_link = 0;
             m_input = true;
 
+        }
+
+        public void setWeight(int n, double w) {
+            throw new RuntimeException("Didn't expect to see you here.");
+        }
+
+        public double weightValue(int n) {
+            //throw new RuntimeException("Jigga what? Jigga who? Jigga you.");
+            return 1;
+        }
+
+        @Override
+        public void updateWeights(double d1, double d2) {
+            //throw new RuntimeException("sanity check");
+            super.updateWeights(d1, d2);
         }
 
         /**
@@ -1113,7 +1121,7 @@ public class ModifiedMultilayerPerceptron
     /**
      * The constructor.
      */
-    public ModifiedMultilayerPerceptron() {
+    public MultilayerPerceptron() {
         m_instances = null;
         m_currentInstance = null;
         m_controlPanel = null;
@@ -1656,6 +1664,7 @@ public class ModifiedMultilayerPerceptron
 
     }
 
+
     /**
      * This creates the required input units.
      */
@@ -1831,6 +1840,51 @@ public class ModifiedMultilayerPerceptron
         this.epochCallback = cb;
     }
 
+    public int numWeights() {
+        int sum = 0;
+
+        for (int i = 0; i < m_neuralNodes.length; i++)
+            sum += m_neuralNodes[i].getNumInputs() + 1;
+
+        return sum;
+    }
+
+    public void setWeights(double[] weights) {
+        int num = numWeights();
+
+        if (weights.length != num)
+            throw new RuntimeException(weights.length + " != " + num);
+
+        // We have the right amount...now how do we assign them?
+        int wIdx = 0;
+        for (int i = 0; i < m_neuralNodes.length; i++) {
+            NeuralConnection node = m_neuralNodes[i];
+            for (int j = -1; j < node.getNumInputs(); j++) {
+                node.setWeight(j, weights[wIdx]);
+                wIdx++;
+            }
+        }
+
+        assert(wIdx == weights.length);
+    }
+
+    public double[] getWeights() {
+        double[] weights = new double[numWeights()];
+        int wIdx = 0;
+
+        for (int i = 0; i < m_neuralNodes.length; i++) {
+            NeuralConnection node = m_neuralNodes[i];
+            for (int j = -1; j < node.getNumInputs(); j++) {
+                weights[wIdx] = node.weightValue(j);
+                wIdx++;
+            }
+        }
+
+        assert(wIdx == weights.length);
+
+        return weights;
+    }
+
     /**
      * Call this function to build and train a neural network for the training
      * data provided.
@@ -1839,6 +1893,10 @@ public class ModifiedMultilayerPerceptron
      * @throws Exception if can't build classification properly.
      */
     public void buildClassifier(Instances i) throws Exception {
+        buildClassifier(i, true);
+    }
+
+    public void buildClassifier(Instances i, boolean train) throws Exception {
 
         // can classifier handle the data?
         getCapabilities().testWithFail(i);
@@ -2019,6 +2077,8 @@ public class ModifiedMultilayerPerceptron
         }
         m_stopped = false;
 
+        if (!train)
+            return;
 
         for (int noa = 1; noa < m_numEpochs + 1; noa++) {
             right = 0;

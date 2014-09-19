@@ -1,15 +1,6 @@
 package cs7641.assignment1;
 
-import cs7641.Experiment;
-import cs7641.ModifiedMultilayerPerceptron;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.SMO;
-import weka.classifiers.functions.supportVector.PolyKernel;
-import weka.classifiers.functions.supportVector.RBFKernel;
-import weka.classifiers.lazy.IBk;
-import weka.classifiers.meta.AdaBoostM1;
-import weka.classifiers.trees.J48;
-import weka.core.SelectedTag;
 
 import java.util.ArrayList;
 import java.util.List;

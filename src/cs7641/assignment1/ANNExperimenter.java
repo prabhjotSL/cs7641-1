@@ -1,7 +1,6 @@
 package cs7641.assignment1;
 
-import cs7641.Experiment;
-import cs7641.ModifiedMultilayerPerceptron;
+import cs7641.ann.MultilayerPerceptron;
 import weka.classifiers.Classifier;
 
 import java.util.ArrayList;
@@ -13,16 +12,16 @@ public class ANNExperimenter extends Experiment {
         e.run(4, 4);
     }
 
-    public static ModifiedMultilayerPerceptron getBestAdult() {
-        ModifiedMultilayerPerceptron best = new ModifiedMultilayerPerceptron();
+    public static MultilayerPerceptron getBestAdult() {
+        MultilayerPerceptron best = new MultilayerPerceptron();
         best.setLearningRate(0.3);
         best.setMomentum(0.2);
         best.setHiddenLayers("64");
         return best;
     }
 
-    public static ModifiedMultilayerPerceptron getBestSemeion() {
-        ModifiedMultilayerPerceptron best = new ModifiedMultilayerPerceptron();
+    public static MultilayerPerceptron getBestSemeion() {
+        MultilayerPerceptron best = new MultilayerPerceptron();
         best.setLearningRate(0.3);
         best.setMomentum(0.2);
         best.setHiddenLayers("64");
@@ -36,14 +35,14 @@ public class ANNExperimenter extends Experiment {
         for (int m = 2; m <= 5; m++) {
             for (int r = 3; r <= 4; r++) {
                 for (int n = 1; n <= 6; n++) {
-                    ModifiedMultilayerPerceptron ann = new ModifiedMultilayerPerceptron();
+                    MultilayerPerceptron ann = new MultilayerPerceptron();
                     ann.setMomentum(m / (double)10);
                     ann.setLearningRate(r / (double)10);
                     ann.setHiddenLayers(String.valueOf(Math.pow(2, n)));
                     anns.add(ann);
                 }
 
-                ModifiedMultilayerPerceptron ann = new ModifiedMultilayerPerceptron();
+                MultilayerPerceptron ann = new MultilayerPerceptron();
                 ann.setMomentum(m / (double)10);
                 ann.setLearningRate(r / (double)10);
                 ann.setHiddenLayers("a"); // try the default
@@ -61,7 +60,7 @@ public class ANNExperimenter extends Experiment {
 
     @Override
     public Object[] getData(Classifier cls) {
-        ModifiedMultilayerPerceptron mp = (ModifiedMultilayerPerceptron)cls;
+        MultilayerPerceptron mp = (MultilayerPerceptron)cls;
         return new Object[]{mp.getMomentum(), mp.getLearningRate(), mp.getHiddenLayers(), mp.getEpoch()};
     }
 
