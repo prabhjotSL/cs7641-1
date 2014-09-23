@@ -1,4 +1,4 @@
-length	t	Calcs	AltCalcs	AvgRuntime	SuccessRatio	Optimizer
+length	t	Calcs	AltCalcs	AvgRuntime	SuccessRatio	Optimizer	Sought	Tried
 10	1	47	37	0.0	0.5051	HillClimber(neighbor=SingleBitFlipper)	100	198
 10	1	805	35	0.0	0.5650	Annealer(temp=0.0,cooling=0.0,neighbor=SingleBitFlipper)	100	177
 10	1	264	143	0.0	0.9009	Annealer(temp=1000000.0,cooling=0.9,neighbor=SingleBitFlipper)	100	111
