@@ -1,26 +1,29 @@
-package cs7641.assignment2;
+package cs7641.assignment2.problems;
 
 import cs7641.ann.MultilayerPerceptron;
+import cs7641.assignment2.OptimizationProblem;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ANNOptimizationProblem implements OptimizationProblem<List<Double>> {
+public class ANNOptimizationProblem extends OptimizationProblem<List<Double>> {
 
     private MultilayerPerceptron mmp;
     private Instances test;
-    private int calcs = 0;
 
     public ANNOptimizationProblem(MultilayerPerceptron mmp, Instances test) {
         this.mmp = mmp;
         this.test = test;
     }
 
-    @Override
-    public int numFitnessCalculations() {
-        return calcs;
+    public String[] getColumns() {
+        return new String[]{"numWeights"};
+    }
+
+    public String[] getData() {
+        return new String[] {String.valueOf(mmp.numWeights())};
     }
 
     public List<Double> getStartConfiguration() {
@@ -41,9 +44,7 @@ public class ANNOptimizationProblem implements OptimizationProblem<List<Double>>
         return null;
     }
 
-    public Double fitnessOf(List<Double> d) {
-        calcs++;
-
+    public Double fitnessOfImpl(List<Double> d) {
         double[] weights = new double[d.size()];
         for (int i = 0; i < d.size(); i++)
             weights[i] = d.get(i);

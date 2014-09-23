@@ -1,18 +1,27 @@
-package cs7641.assignment2;
+package cs7641.assignment2.problems;
+
+import cs7641.assignment2.OptimizationProblem;
 
 import java.util.BitSet;
 import java.util.Random;
 
-public class MaximumCut implements OptimizationProblem<BitSet> {
+public class MaximumCut extends OptimizationProblem<BitSet> {
     private Double[][] adjacency;
-    private int numCalcs = 0;
 
     public MaximumCut(Double[][] adjacency) {
         this.adjacency = adjacency;
     }
 
+    public String[] getColumns() {
+        return new String[]{"size"};
+    }
+
+    public String[] getData() {
+        return new String[] {String.valueOf(adjacency.length)};
+    }
+
     @Override
-    public Double fitnessOf(BitSet bitSet) {
+    public Double fitnessOfImpl(BitSet bitSet) {
         double fitness = 0.0;
 
         for (int i = 0; i < bitSet.length() - 1; i++) {
@@ -25,8 +34,6 @@ public class MaximumCut implements OptimizationProblem<BitSet> {
                 }
             }
         }
-
-        numCalcs++;
 
         return fitness;
     }
@@ -49,11 +56,6 @@ public class MaximumCut implements OptimizationProblem<BitSet> {
     @Override
     public BitSet getRandomConfiguration() {
         return getStartConfiguration();
-    }
-
-    @Override
-    public int numFitnessCalculations() {
-        return numCalcs;
     }
 
     @Override

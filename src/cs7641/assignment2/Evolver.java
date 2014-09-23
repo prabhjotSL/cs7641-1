@@ -1,6 +1,6 @@
 package cs7641.assignment2;
 
-import javafx.util.Pair;
+import cs7641.util.Pair;
 
 import java.util.*;
 
@@ -22,10 +22,19 @@ public class Evolver<T> extends RandomOptimizer<T> {
         public T mutate(T t);
     }
 
-    public Evolver(OptimizationProblem<T> problem, int popSize, int popKeep, Breeder<T> breeder, Mutator<T> mutator, int toMutate) {
-        super(problem);
+    public String toString() {
+        return "Evolver(size=" + popSize + ",keep=" + popKeep + ",breeder=" + breeder.getClass().getSimpleName() + ",toMutate=" + toMutate + ",mutator=" + (mutator == null ? null : mutator.getClass().getSimpleName()) + ")";
+    }
 
+    public void resetImpl() {
         this.population = new ArrayList<T>(popSize);
+
+        for (int i = 0; i < popSize; i++)
+            population.add(problem.getRandomConfiguration());
+    }
+
+    public Evolver(int popSize, int popKeep, Breeder<T> breeder, Mutator<T> mutator, int toMutate) {
+
         this.popKeep = popKeep;
         this.popSize = popSize;
 
@@ -33,9 +42,6 @@ public class Evolver<T> extends RandomOptimizer<T> {
         this.breeder = breeder;
 
         this.toMutate = toMutate;
-
-        for (int i = 0; i < popSize; i++)
-            population.add(problem.getRandomConfiguration());
     }
 
     @Override
@@ -97,9 +103,6 @@ public class Evolver<T> extends RandomOptimizer<T> {
 
         Map.Entry<T, Double> localBest = sorted.entrySet().iterator().next();
 
-        if (best == null || localBest.getValue() > best.getValue())
-            return new Pair<T, Double>(localBest.getKey(), localBest.getValue());
-        else
-            return best;
+        return new Pair<T, Double>(localBest.getKey(), localBest.getValue());
     }
 }

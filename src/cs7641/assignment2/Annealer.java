@@ -1,21 +1,31 @@
 package cs7641.assignment2;
 
-import javafx.util.Pair;
+import cs7641.util.Pair;
 
-import java.util.List;
+import java.util.Iterator;
 
 public class Annealer<T> extends RandomOptimizer<T> {
     private NeighborFunction<T> neighborFunction;
-    private double temp;
+    protected double temp;
     private final double cooling;
     private Pair<T, Double> current;
+    protected int lastSubPar;
+    private final double startTemp;
 
-    public Annealer(OptimizationProblem<T> problem, NeighborFunction<T> neighborFunction, double temp, double cooling) {
-        super(problem);
-
+    public Annealer(NeighborFunction<T> neighborFunction, double temp, double cooling) {
         this.neighborFunction = neighborFunction;
-        this.temp = temp;
+        this.temp = this.startTemp = temp;
         this.cooling = cooling;
+    }
+
+    public void resetImpl() {
+        this.temp = startTemp;
+        current = null;
+        lastSubPar = 0;
+    }
+
+    public String toString() {
+        return "Annealer(temp=" + startTemp + ",cooling=" + cooling + ",neighbor=" + neighborFunction.getClass().getSimpleName() + ")";
     }
 
     @Override
@@ -24,25 +34,24 @@ public class Annealer<T> extends RandomOptimizer<T> {
             T start = problem.getStartConfiguration();
             double fitness = problem.fitnessOf(start);
             current = new Pair(start, fitness);
-            best = current;
         }
 
-        List<T> neighbors = neighborFunction.getNeighbors(current.getKey());
+        Iterator<T> neighbors = neighborFunction.getNeighbors(current.getKey());
 
-        for (T neighbor : neighbors) {
+        while (neighbors.hasNext()) {
+            T neighbor = neighbors.next();
             double fitness = problem.fitnessOf(neighbor);
 
             if (fitness > current.getValue() || Math.random() < Math.exp((fitness - current.getValue()) / temp)) {
                 current = new Pair(neighbor, fitness);
+                if (fitness <= current.getValue())
+                    lastSubPar = iteration;
                 break;
             }
         }
 
         temp *= cooling;
 
-        //if (current.getValue() > best.getValue())
-        //    System.out.println(iteration + ": " + current.getValue());
-
-        return (current.getValue() > best.getValue()) ? current : best;
+        return (current);
     }
 }

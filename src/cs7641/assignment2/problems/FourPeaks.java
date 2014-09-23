@@ -1,21 +1,25 @@
-package cs7641.assignment2;
+package cs7641.assignment2.problems;
+
+import cs7641.assignment2.OptimizationProblem;
 
 import java.util.BitSet;
 import java.util.Random;
 
-public class FourPeaks implements OptimizationProblem<BitSet> {
+public class FourPeaks extends OptimizationProblem<BitSet> {
     private int length;
     private int t;
-    private int calcs = 0;
 
-    public FourPeaks(int length) {
+    public FourPeaks(int length, int t) {
         this.length = length;
-        this.t = length / 10;
+        this.t = t;
     }
 
-    @Override
-    public int numFitnessCalculations() {
-        return calcs;
+    public String[] getColumns() {
+        return new String[]{"length", "t"};
+    }
+
+    public String[] getData() {
+        return new String[] {String.valueOf(length), String.valueOf(t)};
     }
 
     @Override
@@ -24,9 +28,7 @@ public class FourPeaks implements OptimizationProblem<BitSet> {
     }
 
     @Override
-    public Double fitnessOf(BitSet bitSet) {
-        calcs++;
-
+    public Double fitnessOfImpl(BitSet bitSet) {
         int idx = 0;
 
         int heads = 0;

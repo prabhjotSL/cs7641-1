@@ -1,6 +1,9 @@
-package cs7641.assignment2;
+package cs7641.assignment2.problems;
 
 import cs7641.ann.MultilayerPerceptron;
+import cs7641.assignment2.HillClimber;
+import cs7641.assignment2.NeighborFunction;
+import cs7641.assignment2.NeighborFunctions;
 import weka.core.Instances;
 
 import java.io.File;
@@ -36,9 +39,9 @@ public class ANNExperimenter {
         ANNOptimizationProblem op = new ANNOptimizationProblem(mmp2, test);
         NeighborFunction func = new NeighborFunctions.SingleRandomWeightUpdater();
 
-        HillClimber<List<Double>> hc = new HillClimber<List<Double>>(op,func);
+        //HillClimber<List<Double>> hc = new HillClimber<List<Double>>(op,func);
         //Annealer<List<Double>> hc = new Annealer<List<Double>>(op, func, 1E11, .95);
-        hc.train(10000);
+        //hc.train(10000);
         }
 
         /*

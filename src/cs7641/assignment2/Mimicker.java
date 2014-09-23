@@ -1,9 +1,9 @@
 package cs7641.assignment2;
 
+import cs7641.util.Pair;
 import dist.DiscreteDependencyTree;
 import dist.DiscreteUniformDistribution;
 import dist.Distribution;
-import javafx.util.Pair;
 import opt.EvaluationFunction;
 import opt.prob.GenericProbabilisticOptimizationProblem;
 import opt.prob.MIMIC;
@@ -13,12 +13,22 @@ import shared.Instance;
 import java.util.BitSet;
 
 public class Mimicker extends RandomOptimizer<BitSet> {
+    private final int popSize;
+    private final int keep;
+
     private Distribution dist;
     private MIMIC mimic;
 
-    public Mimicker(OptimizationProblem<BitSet> problem, int popSize, int keep) {
-        super(problem);
+    public Mimicker(int popSize, int keep) {
+        this.popSize = popSize;
+        this.keep = keep;
+    }
 
+    public String toString() {
+        return "Mimicker(size=" + popSize + ",keep=" + keep + ")";
+    }
+
+    public void resetImpl() {
         int[] ranges = new int[problem.getStartConfiguration().length() - 1];
         for (int i = 0; i < ranges.length; i++)
             ranges[i] = 2;
@@ -53,6 +63,8 @@ public class Mimicker extends RandomOptimizer<BitSet> {
 
         BitSet b = instanceToBitSet(mimic.getOptimal());
 
-        return new Pair(b, problem.fitnessOf(b));
+        double fitness = problem.fitnessOf(b);
+
+        return new Pair(b, fitness);
     }
 }

@@ -1,4 +1,6 @@
-package cs7641.assignment2;
+package cs7641.assignment2.problems;
+
+import cs7641.assignment2.*;
 
 import java.text.DecimalFormat;
 import java.util.BitSet;
@@ -8,7 +10,7 @@ public class MaximumCutExperimenter {
     public static void main(String[] args) {
         Random r = new Random(31);
 
-        int nodes = 20;
+        int nodes = 40;
 
         Double[][] adjacency = new Double[nodes][nodes];
 
@@ -30,23 +32,25 @@ public class MaximumCutExperimenter {
             System.out.println();
         }
 
+        /*
         MaximumCut mc0 = new MaximumCut(adjacency);
         Mimicker m = new Mimicker(mc0, 200, 5);
         m.train(1000);
 
         MaximumCut mc = new MaximumCut(adjacency);
+        HillClimber<BitSet> hc = new HillClimber(mc, new NeighborFunctions.SingleBitFlipper());
+        hc.train(12000);
 
-        for (int i = 0; i < 10; i++) {
-            HillClimber<BitSet> hc = new HillClimber(mc, new NeighborFunctions.SingleBitFlipper());
-            hc.train(12000);
-        }
+        MaximumCut mc3 = new MaximumCut(adjacency);
+        Annealer<BitSet> an = new Annealer(mc3, new NeighborFunctions.SingleBitFlipper(), 1E11, .995);
+        an.train(12000);
 
         final NeighborFunctions.SingleBitFlipper flipper = new NeighborFunctions.SingleBitFlipper();
         MaximumCut mc2 = new MaximumCut(adjacency);
         Evolver.Mutator<BitSet> mutator = new Evolver.Mutator<BitSet>() {
             @Override
             public BitSet mutate(BitSet bitSet) {
-                return flipper.getNeighbors(bitSet).get(0);
+                return flipper.getNeighbors(bitSet).next();
             }
         };
         final Random r2 = new Random();
@@ -62,5 +66,6 @@ public class MaximumCutExperimenter {
         };
         Evolver<BitSet> ev = new Evolver<BitSet>(mc2, 100, 50, breeder, mutator, 10);
         ev.train(10000);
+        */
     }
 }
