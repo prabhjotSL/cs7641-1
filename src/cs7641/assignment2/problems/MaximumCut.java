@@ -7,17 +7,19 @@ import java.util.Random;
 
 public class MaximumCut extends OptimizationProblem<BitSet> {
     private Double[][] adjacency;
+    private String desc;
 
-    public MaximumCut(Double[][] adjacency) {
+    public MaximumCut(Double[][] adjacency, String desc) {
         this.adjacency = adjacency;
+        this.desc = desc;
     }
 
     public String[] getColumns() {
-        return new String[]{"size"};
+        return new String[]{"size", "desc"};
     }
 
     public String[] getData() {
-        return new String[] {String.valueOf(adjacency.length)};
+        return new String[] {String.valueOf(adjacency.length), desc};
     }
 
     @Override

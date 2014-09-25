@@ -31,6 +31,10 @@ public abstract class RandomOptimizer<T> {
 
     public abstract Pair<T, Double> iterate();
 
+    public boolean stopOnStaleScore() {
+        return true;
+    }
+
     public void train(int maxStale) {
         int stale = 0;
         Double staleScore = null;
@@ -38,16 +42,9 @@ public abstract class RandomOptimizer<T> {
         while (true) {
             iteration++;
 
-            boolean canQuit = true;
-
-            if (this instanceof Annealer) {
-                Annealer ann = (Annealer)this;
-                if (iteration - ann.lastSubPar < 100)
-                    canQuit = false;
-            }
-
-            if (canQuit && stale == maxStale)
+            if (stopOnStaleScore() && stale == maxStale) {
                 break;
+            }
 
             Pair<T, Double> current = iterate();
 

@@ -2,70 +2,112 @@ package cs7641.assignment2.problems;
 
 import cs7641.assignment2.*;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Random;
 
-public class MaximumCutExperimenter {
-    public static void main(String[] args) {
+public class MaximumCutExperimenter extends Experiment<BitSet> {
+
+    public static void main(String[] args) throws Exception {
+        MaximumCutExperimenter exp = new MaximumCutExperimenter();
+        exp.run("max-cut", Integer.MAX_VALUE, 100);
+    }
+
+    @Override
+    public List<OptimizationProblem<BitSet>> getProblems() {
+        List problems = new ArrayList();
+
         Random r = new Random(31);
 
-        int nodes = 40;
+        for (int m = 2; m < 3; m++) {
+            int nodes = m * 40;
+            int magnitude = 20;
 
-        Double[][] adjacency = new Double[nodes][nodes];
+            Double[][] adjacency = new Double[nodes][nodes];
 
-        for (int i = 0; i < nodes; i++) {
-            for (int j = i + 1; j < nodes; j++) {
-                if (r.nextBoolean()) {
-                    adjacency[i][j] = adjacency[j][i] = r.nextBoolean() ? (double)r.nextInt(10) : (double)r.nextInt(3);
-                } else {
-                    adjacency[i][j] = adjacency[j][i] = null;
+            // ~50% connected
+            for (int i = 0; i < nodes; i++) {
+                for (int j = i + 1; j < nodes; j++) {
+                    if (r.nextBoolean()) {
+                        adjacency[i][j] = adjacency[j][i] = (double) r.nextInt(magnitude) + 1;
+                    } else {
+                        adjacency[i][j] = adjacency[j][i] = null;
+                    }
                 }
             }
+            problems.add(new MaximumCut(adjacency, "50%/uniform"));
+
+            Double[][] adjacency2 = new Double[nodes][nodes];
+
+            // fully connected
+            for (int i = 0; i < nodes; i++) {
+                for (int j = i + 1; j < nodes; j++) {
+                    adjacency2[i][j] = adjacency2[j][i] = (double) r.nextInt(magnitude) + 1;
+                }
+            }
+
+            problems.add(new MaximumCut(adjacency2, "full/uniform"));
+
+            Double[][] adjacency3 = new Double[nodes][nodes];
+
+            // somewhat connected
+            for (int i = 0; i < nodes; i++) {
+                int connections = r.nextInt(nodes - i);
+                for (int j = 0; j < connections; j++) {
+                    int idx = i + r.nextInt(nodes - i);
+                    adjacency3[i][idx] = adjacency3[idx][i] = (double) r.nextInt(magnitude) + 1;
+                }
+            }
+
+            problems.add(new MaximumCut(adjacency3, "somewhat"));
         }
-        DecimalFormat df = new DecimalFormat("0.00");
 
-        for (int i = 0; i < nodes; i++) {
-            for (int j = 0; j < nodes; j++) {
-                System.out.print((adjacency[i][j] == null ? "null" : df.format(adjacency[i][j])) + ", ");
-            }
-            System.out.println();
-        }
+        return problems;
+    }
 
-        /*
-        MaximumCut mc0 = new MaximumCut(adjacency);
-        Mimicker m = new Mimicker(mc0, 200, 5);
-        m.train(1000);
+    @Override
+    public List<RandomOptimizer<BitSet>> getOptimizers() {
+        List optimizers = new ArrayList();
 
-        MaximumCut mc = new MaximumCut(adjacency);
-        HillClimber<BitSet> hc = new HillClimber(mc, new NeighborFunctions.SingleBitFlipper());
-        hc.train(12000);
+        optimizers.add(new HillClimber(new NeighborFunctions.SingleBitFlipper()));
 
-        MaximumCut mc3 = new MaximumCut(adjacency);
-        Annealer<BitSet> an = new Annealer(mc3, new NeighborFunctions.SingleBitFlipper(), 1E11, .995);
-        an.train(12000);
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.1));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.2));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.3));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.4));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.5));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.6));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.7));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.8));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.9));
+        optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.99));
 
-        final NeighborFunctions.SingleBitFlipper flipper = new NeighborFunctions.SingleBitFlipper();
-        MaximumCut mc2 = new MaximumCut(adjacency);
-        Evolver.Mutator<BitSet> mutator = new Evolver.Mutator<BitSet>() {
-            @Override
-            public BitSet mutate(BitSet bitSet) {
-                return flipper.getNeighbors(bitSet).next();
-            }
-        };
-        final Random r2 = new Random();
-        Evolver.Breeder<BitSet> breeder = new Evolver.Breeder<BitSet>() {
-            @Override
-            public BitSet breed(BitSet m, BitSet d) {
-                BitSet child = new BitSet();
-                for (int i = 0; i < m.length() - 1; i++)
-                    child.set(i, r2.nextBoolean() ? m.get(i) : d.get(i));
-                child.set(m.length() - 1, true);
-                return child;
-            }
-        };
-        Evolver<BitSet> ev = new Evolver<BitSet>(mc2, 100, 50, breeder, mutator, 10);
-        ev.train(10000);
-        */
+        optimizers.add(new Evolver(100, 50, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(100, 50, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(200, 50, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(200, 50, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(200, 100, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(200, 100, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(400, 100, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(400, 100, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(400, 200, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+        optimizers.add(new Evolver(400, 200, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
+
+        optimizers.add(new Mimicker(100, 2));
+        optimizers.add(new Mimicker(100, 3));
+        optimizers.add(new Mimicker(100, 4));
+        optimizers.add(new Mimicker(100, 5));
+        optimizers.add(new Mimicker(200, 2));
+        optimizers.add(new Mimicker(200, 3));
+        optimizers.add(new Mimicker(200, 4));
+        optimizers.add(new Mimicker(200, 5));
+        optimizers.add(new Mimicker(200, 2));
+        optimizers.add(new Mimicker(200, 3));
+        optimizers.add(new Mimicker(200, 4));
+        optimizers.add(new Mimicker(200, 5));
+        optimizers.add(new Mimicker(200, 10));
+
+        return optimizers;
     }
 }

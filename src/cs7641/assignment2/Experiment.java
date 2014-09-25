@@ -1,6 +1,7 @@
 package cs7641.assignment2;
 
 import com.sun.deploy.util.StringUtils;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.FileWriter;
 import java.util.Arrays;
@@ -10,23 +11,27 @@ public abstract class Experiment<T> {
     public abstract List<OptimizationProblem<T>> getProblems();
     public abstract List<RandomOptimizer<T>> getOptimizers();
 
-    public void run(String name, int sought) throws Exception {
+    public void run(String name, int sought, int tries) throws Exception {
         FileWriter fw = new FileWriter(name + "-" + sought + ".tsv");
 
         boolean headerPrinted = false;
 
         for (OptimizationProblem<T> problem : getProblems()) {
+            boolean hasTarget = problem.getTarget() != null;
+
             if (!headerPrinted) {
                 String msg = StringUtils.join(Arrays.asList(problem.getColumns()), "\t");
-                msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Calcs", "AltCalcs", "AvgRuntime", "SuccessRatio", "Optimizer"}), "\t");
-                msg += "\n";
+                msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Invocations", "FitnessCost", "AltFitnessCost", "MinFitness", "MeanFitness", "MaxFitness", "StdDevFitness", "AvgRuntime"}), "\t");
+                if (hasTarget)
+                    msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Target", "Hits", "HitsRatio", "FitCalcsPerOpt", "AltFitCalcsPerOpt", "RuntimePerOpt"}), "\t");
+
+                msg += "\tOptimizer\n";
 
                 fw.write(msg);
                 System.out.print(msg);
 
                 headerPrinted = true;
             }
-
 
             for (RandomOptimizer<T> optimizer : getOptimizers()) {
 
@@ -38,7 +43,9 @@ public abstract class Experiment<T> {
 
                 long start = System.currentTimeMillis();
 
-                while (found < sought) {
+                SummaryStatistics stats = new SummaryStatistics();
+
+                while (found < sought && tried < tries) {
                     problem.reset();
                     optimizer.setProblem(problem);
                     optimizer.reset();
@@ -48,20 +55,53 @@ public abstract class Experiment<T> {
                     calcs += problem.numFitnessCalculations();
                     altCalcs += optimizer.getBestNumCalcs();
 
+                    stats.addValue(optimizer.getBest().getValue());
+
                     tried += 1;
 
-                    if (optimizer.getBest().getValue().equals(problem.getTarget())) {
-                        found += 1;
-                    } else if (optimizer.getBest().getValue() > problem.getTarget())
-                        throw new RuntimeException("WTF");
+                    if (hasTarget) {
+                        if (optimizer.getBest().getValue().equals(problem.getTarget())) {
+                            found += 1;
+                        } else if (optimizer.getBest().getValue() < problem.getTarget()) {
+                            //System.out.println("subopt: " + optimizer.getBest().getValue());
+                        } else if (optimizer.getBest().getValue() > problem.getTarget())
+                            throw new RuntimeException("WTF");
+                    }
                 }
 
-                Double avgSeconds  = ((System.currentTimeMillis() - start) / 1000) / (double)sought;
-                Double avgCalcs    = calcs / (double)sought;
-                Double altAvgCalcs = altCalcs / (double)sought;
+                long end = System.currentTimeMillis();
 
-                String msg = StringUtils.join(Arrays.asList(problem.getData()), "\t");
-                msg += "\t" + StringUtils.join(Arrays.asList(new String[] {String.format("%1.0f", avgCalcs), String.format("%1.0f", altAvgCalcs), String.format("%1.1f", avgSeconds), String.format("%1.4f", found / (double)tried), optimizer.toString(), String.valueOf(found), String.valueOf(tried)}), "\t");
+                Double avgRuntime = ((end - start) / 1000) / (double)tried;
+
+                Double fitnessCost = calcs / stats.getSum();
+                Double altFitnessCost = altCalcs /stats.getSum();
+
+                String msg = StringUtils.join(Arrays.asList(problem.getData()), "\t") + "\t";
+
+                msg += String.format("%1d\t", tried);
+                msg += String.format("%1f\t", fitnessCost);
+                msg += String.format("%1f\t", altFitnessCost);
+                msg += String.format("%1.1f\t", stats.getMin());
+                msg += String.format("%1.1f\t", stats.getMean());
+                msg += String.format("%1.1f\t", stats.getMax());
+                msg += String.format("%1.1f\t", stats.getStandardDeviation());
+                msg += String.format("%1.2f", avgRuntime);
+
+                if (hasTarget) {
+                    Double secsPerOpt     = ((end - start) / 1000) / (double)found;
+                    Double calcsPerOpt    = calcs / (double)found;
+                    Double altCalcsPerOpt = altCalcs / (double)found;
+
+                    msg += "\t" + problem.getTarget();
+                    msg += "\t" + found + "\t";
+                    msg += String.format("%1.4f\t", found / (double)tried);
+                    msg += String.format("%1.0f\t", calcsPerOpt);
+                    msg += String.format("%1.0f\t", altCalcsPerOpt);
+                    msg += String.format("%1.1f\t", secsPerOpt);
+                }
+
+                msg += "\t" + optimizer.toString();
+
                 msg += "\n";
 
                 fw.write(msg);
