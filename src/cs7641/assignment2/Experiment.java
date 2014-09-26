@@ -11,7 +11,7 @@ public abstract class Experiment<T> {
     public abstract List<OptimizationProblem<T>> getProblems();
     public abstract List<RandomOptimizer<T>> getOptimizers();
 
-    public void run(String name, int sought, int tries) throws Exception {
+    public void run(String name, int sought, int tries, int stale) throws Exception {
         FileWriter fw = new FileWriter(name + "-" + sought + ".tsv");
 
         boolean headerPrinted = false;
@@ -50,7 +50,7 @@ public abstract class Experiment<T> {
                     optimizer.setProblem(problem);
                     optimizer.reset();
 
-                    optimizer.train(100);
+                    optimizer.train(stale);
 
                     calcs += problem.numFitnessCalculations();
                     altCalcs += optimizer.getBestNumCalcs();

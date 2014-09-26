@@ -36,8 +36,10 @@ public class ANNOptimizationProblem extends OptimizationProblem<List<Double>> {
     }
 
     public List<Double> getRandomConfiguration() {
-        // TODO
-        return null;
+        List<Double> r = new ArrayList();
+        for (int i = 0; i < mmp.numWeights(); i++)
+            r.add(Math.random() * 20 - 10);
+        return r;
     }
 
     public Double getTarget() {

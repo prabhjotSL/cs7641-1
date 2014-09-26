@@ -27,7 +27,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
 
     @Override
     public boolean stopOnStaleScore() {
-        return false;
+        return true;
     }
 
     public String toString() {
@@ -54,7 +54,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
                     lastChange = iteration;
                     //System.out.println(fitness + " improved " + temp);
                 } else if (fitness == current.getValue()) {
-//                    lastChange = iteration;
+                    lastChange = iteration;
                     //System.out.println(fitness + " same " + temp);
                 } else
                     ;//System.out.println(fitness + " worsened " + temp);

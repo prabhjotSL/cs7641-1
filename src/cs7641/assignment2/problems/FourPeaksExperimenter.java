@@ -9,7 +9,7 @@ import java.util.List;
 public class FourPeaksExperimenter extends Experiment<BitSet> {
     public static void main(String[] args) throws Exception {
         FourPeaksExperimenter exp = new FourPeaksExperimenter();
-        exp.run("four-peaks", 100, Integer.MAX_VALUE);
+        exp.run("four-peaks", 100, Integer.MAX_VALUE, 100);
     }
 
     @Override

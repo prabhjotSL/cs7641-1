@@ -3,6 +3,7 @@ package cs7641.assignment2;
 import cs7641.util.Pair;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class HillClimber<T> extends RandomOptimizer<T> {
     private NeighborFunction<T> neighborFunction;

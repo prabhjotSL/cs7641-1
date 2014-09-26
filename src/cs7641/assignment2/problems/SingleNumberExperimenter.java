@@ -9,7 +9,7 @@ import java.util.List;
 public class SingleNumberExperimenter extends Experiment<BitSet> {
     public static void main(String[] args) throws Exception {
         SingleNumberExperimenter exp = new SingleNumberExperimenter();
-        exp.run("single-number", 100, Integer.MAX_VALUE);
+        exp.run("single-number", 100, Integer.MAX_VALUE, 25);
     }
 
     @Override

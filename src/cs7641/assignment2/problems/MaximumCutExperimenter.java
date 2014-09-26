@@ -11,7 +11,7 @@ public class MaximumCutExperimenter extends Experiment<BitSet> {
 
     public static void main(String[] args) throws Exception {
         MaximumCutExperimenter exp = new MaximumCutExperimenter();
-        exp.run("max-cut", Integer.MAX_VALUE, 100);
+        exp.run("max-cut", Integer.MAX_VALUE, 100, 25);
     }
 
     @Override

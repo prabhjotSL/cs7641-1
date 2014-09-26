@@ -1,56 +1,82 @@
 package cs7641.assignment2.problems;
 
 import cs7641.ann.MultilayerPerceptron;
-import cs7641.assignment2.HillClimber;
-import cs7641.assignment2.NeighborFunction;
-import cs7641.assignment2.NeighborFunctions;
+import cs7641.assignment2.*;
 import weka.core.Instances;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ANNExperimenter {
+public class ANNExperimenter extends Experiment<List<Double>> {
     public static void main(String[] args) throws Exception {
-        Instances data = new Instances(new FileReader(new File("datasets/adult_modified.arff")));
-        data.setClassIndex(data.numAttributes() - 1);
-        int idx = (int)(data.numInstances() * 0.9);
-        Instances train = new Instances(data, 0, idx);
-        Instances test = new Instances(data, idx, data.numInstances() - idx);
+        ANNExperimenter exp = new ANNExperimenter();
+        exp.run("ann", Integer.MAX_VALUE, 10, 10);
+    }
 
-        /*
-        MultilayerPerceptron mmp = new MultilayerPerceptron();
-        mmp.setHiddenLayers("1");
-        mmp.setMomentum(0.2);
-        mmp.setLearningRate(0.3);
-        mmp.buildClassifier(train, true);
+    @Override
+    public List<OptimizationProblem<List<Double>>> getProblems() {
+        Instances data;
 
-        Evaluation eval = new Evaluation(train);
-        eval.evaluateModel(mmp, test);
-
-        System.out.println(eval.pctCorrect());
-        */
-
-        for (int i = 0; i < 10; i++) {
-        MultilayerPerceptron mmp2 = new MultilayerPerceptron();
-        mmp2.setHiddenLayers("1");
-        mmp2.buildClassifier(train, false);
-
-        ANNOptimizationProblem op = new ANNOptimizationProblem(mmp2, test);
-        NeighborFunction func = new NeighborFunctions.SingleRandomWeightUpdater();
-
-        //HillClimber<List<Double>> hc = new HillClimber<List<Double>>(op,func);
-        //Annealer<List<Double>> hc = new Annealer<List<Double>>(op, func, 1E11, .95);
-        //hc.train(10000);
+        try {
+            data = new Instances(new FileReader(new File("datasets/adult_modified.arff")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        /*
-        double[] weights1 = mmp.getWeights();
-        double[] weights2 = mmp2.getWeights();
+        data.setClassIndex(data.numAttributes() - 1);
+        Instances reduced = new Instances(data, 0, 1000);
 
-        for (int i = 0; i < weights1.length; i++)
-            if (weights1[i] != weights2[i])
-                System.out.println(i + " " + weights1[i] + " " + weights2[i]);
-        */
+        MultilayerPerceptron mmp = new MultilayerPerceptron();
+        mmp.setHiddenLayers("1");
+
+        try {
+            mmp.buildClassifier(data, false);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        MultilayerPerceptron mmp2 = new MultilayerPerceptron();
+        mmp2.setHiddenLayers("2");
+
+        try {
+            mmp2.buildClassifier(data, false);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        List<OptimizationProblem<List<Double>>> problems = new ArrayList();
+
+        problems.add(new ANNOptimizationProblem(mmp, reduced));
+        problems.add(new ANNOptimizationProblem(mmp2, reduced));
+
+        return problems;
+    }
+
+    @Override
+    public List<RandomOptimizer<List<Double>>> getOptimizers() {
+        List<RandomOptimizer<List<Double>>> optimizers = new ArrayList();
+
+        NeighborFunction func = new NeighborFunctions.ContinuousSpaceNeighbor();
+        HillClimber<List<Double>> hc = new HillClimber<List<Double>>(func);
+
+        //optimizers.add(hc);
+
+        /*(optimizers.add(new Evolver(100, 50, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 10));
+        optimizers.add(new Evolver(200, 50, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 10));
+        optimizers.add(new Evolver(200, 100, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 10));
+        optimizers.add(new Evolver(400, 100, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 10));
+        optimizers.add(new Evolver(400, 200, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 10));
+
+        optimizers.add(new Evolver(100, 50, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 50));
+        optimizers.add(new Evolver(200, 50, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 50));
+        optimizers.add(new Evolver(200, 100, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 50));
+        optimizers.add(new Evolver(400, 100, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 50));
+        optimizers.add(new Evolver(400, 200, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 50));*/
+
+        optimizers.add(new Evolver(2000, 250, new NeighborFunctions.ListUniformCrossover(), new NeighborFunctions.SingleWeightMutator(), 200));
+
+        return optimizers;
     }
 }
