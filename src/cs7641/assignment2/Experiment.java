@@ -11,8 +11,8 @@ public abstract class Experiment<T> {
     public abstract List<OptimizationProblem<T>> getProblems();
     public abstract List<RandomOptimizer<T>> getOptimizers();
 
-    public void run(String name, int sought, int tries, int stale) throws Exception {
-        FileWriter fw = new FileWriter(name + "-" + sought + ".tsv");
+    public void run(String name, int targetsSought, int maxTries) throws Exception {
+        FileWriter fw = new FileWriter(name + ".tsv");
 
         boolean headerPrinted = false;
 
@@ -21,7 +21,7 @@ public abstract class Experiment<T> {
 
             if (!headerPrinted) {
                 String msg = StringUtils.join(Arrays.asList(problem.getColumns()), "\t");
-                msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Invocations", "FitnessCost", "AltFitnessCost", "MinFitness", "MeanFitness", "MaxFitness", "StdDevFitness", "AvgRuntime"}), "\t");
+                msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Invocations", "NumFitness", "AltNumFitness", "FitnessCost", "AltFitnessCost", "MinFitness", "MeanFitness", "MaxFitness", "StdDevFitness", "AvgRuntime"}), "\t");
                 if (hasTarget)
                     msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Target", "Hits", "HitsRatio", "FitCalcsPerOpt", "AltFitCalcsPerOpt", "RuntimePerOpt"}), "\t");
 
@@ -45,12 +45,13 @@ public abstract class Experiment<T> {
 
                 SummaryStatistics stats = new SummaryStatistics();
 
-                while (found < sought && tried < tries) {
+                while (found < targetsSought && tried < maxTries) {
+                    System.out.println(tried);
                     problem.reset();
                     optimizer.setProblem(problem);
                     optimizer.reset();
 
-                    optimizer.train(stale);
+                    optimizer.train();
 
                     calcs += problem.numFitnessCalculations();
                     altCalcs += optimizer.getBestNumCalcs();
@@ -79,6 +80,8 @@ public abstract class Experiment<T> {
                 String msg = StringUtils.join(Arrays.asList(problem.getData()), "\t") + "\t";
 
                 msg += String.format("%1d\t", tried);
+                msg += String.format("%1d\t", calcs);
+                msg += String.format("%1d\t", altCalcs);
                 msg += String.format("%1f\t", fitnessCost);
                 msg += String.format("%1f\t", altFitnessCost);
                 msg += String.format("%1.1f\t", stats.getMin());

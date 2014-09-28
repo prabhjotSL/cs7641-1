@@ -5,11 +5,11 @@ import cs7641.assignment2.OptimizationProblem;
 import java.util.BitSet;
 import java.util.Random;
 
-public class SingleNumber extends OptimizationProblem<BitSet> {
+public class ItoanProblem extends OptimizationProblem<BitSet> {
     private BitSet number;
     private int bits;
 
-    public SingleNumber(int bits, int seed) {
+    public ItoanProblem(int bits, int seed) {
         this. bits = bits;
 
         Random r = new Random(seed);

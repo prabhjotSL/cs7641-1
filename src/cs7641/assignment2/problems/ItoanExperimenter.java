@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-public class SingleNumberExperimenter extends Experiment<BitSet> {
+public class ItoanExperimenter extends Experiment<BitSet> {
     public static void main(String[] args) throws Exception {
-        SingleNumberExperimenter exp = new SingleNumberExperimenter();
-        exp.run("single-number", 100, Integer.MAX_VALUE, 25);
+        ItoanExperimenter exp = new ItoanExperimenter();
+        exp.run("itoan", 50, Integer.MAX_VALUE);
     }
 
     @Override
     public List<OptimizationProblem<BitSet>> getProblems() {
         List problems = new ArrayList();
 
-        problems.add(new SingleNumber(1000, 51));
-        problems.add(new SingleNumber(50, 19));
-        problems.add(new SingleNumber(100, 31));
+        problems.add(new ItoanProblem(50, 19));
+        problems.add(new ItoanProblem(100, 31));
+        problems.add(new ItoanProblem(200, 51));
 
         return problems;
     }
@@ -52,19 +52,13 @@ public class SingleNumberExperimenter extends Experiment<BitSet> {
         optimizers.add(new Evolver(400, 200, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
         optimizers.add(new Evolver(400, 200, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
 
-        optimizers.add(new Mimicker(100, 2));
-        optimizers.add(new Mimicker(100, 3));
-        optimizers.add(new Mimicker(100, 4));
-        optimizers.add(new Mimicker(100, 5));
         optimizers.add(new Mimicker(200, 2));
-        optimizers.add(new Mimicker(200, 3));
         optimizers.add(new Mimicker(200, 4));
-        optimizers.add(new Mimicker(200, 5));
-        optimizers.add(new Mimicker(200, 2));
-        optimizers.add(new Mimicker(200, 3));
-        optimizers.add(new Mimicker(200, 4));
-        optimizers.add(new Mimicker(200, 5));
-        optimizers.add(new Mimicker(200, 10));
+        optimizers.add(new Mimicker(200, 6));
+
+        optimizers.add(new Mimicker(400, 2));
+        optimizers.add(new Mimicker(400, 4));
+        optimizers.add(new Mimicker(400, 6));
 
         return optimizers;
     }

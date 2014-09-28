@@ -8,6 +8,7 @@ public abstract class RandomOptimizer<T> {
     private Pair<T, Double> best;
     protected int iteration = 0;
     private int bestNumCalcs = 0;
+    protected int maxStale = 100;
 
     public void setProblem(OptimizationProblem<T> problem) {
         this.problem = problem;
@@ -31,11 +32,19 @@ public abstract class RandomOptimizer<T> {
 
     public abstract Pair<T, Double> iterate();
 
+    public int getMaxStale() {
+        return maxStale;
+    }
+
+    public void setMaxStale(int maxStale) {
+        this.maxStale = maxStale;
+    }
+
     public boolean stopOnStaleScore() {
         return true;
     }
 
-    public void train(int maxStale) {
+    public void train() {
         int stale = 0;
         Double staleScore = null;
 

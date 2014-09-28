@@ -42,6 +42,8 @@ public class Evolver<T> extends RandomOptimizer<T> {
         this.breeder = breeder;
 
         this.toMutate = toMutate;
+
+        this.maxStale = 10;
     }
 
     @Override

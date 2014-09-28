@@ -27,7 +27,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
 
     @Override
     public boolean stopOnStaleScore() {
-        return true;
+        return false;
     }
 
     public String toString() {
@@ -45,26 +45,20 @@ public class Annealer<T> extends RandomOptimizer<T> {
 
         Iterator<T> neighbors = neighborFunction.getNeighbors(current.getKey());
 
+        boolean random = temp > 1E-11;
+
         while (neighbors.hasNext()) {
             T neighbor = neighbors.next();
             double fitness = problem.fitnessOf(neighbor);
 
-            if (fitness > current.getValue() || (Math.random() < Math.exp((fitness - current.getValue()) / temp))) {
-                if (fitness > current.getValue()) {
-                    lastChange = iteration;
-                    //System.out.println(fitness + " improved " + temp);
-                } else if (fitness == current.getValue()) {
-                    lastChange = iteration;
-                    //System.out.println(fitness + " same " + temp);
-                } else
-                    ;//System.out.println(fitness + " worsened " + temp);
+            if (fitness > current.getValue() || ((random && Math.random() < Math.exp((fitness - current.getValue() - 0.1) / temp)))) {
+                lastChange = iteration;
                 current = new Pair(neighbor, fitness);
                 break;
             }
         }
 
-        if ((iteration - lastChange) > 0 && temp < 1E-11) {
-            //System.out.println("bailed");
+        if ((iteration - lastChange) > 0) {
             return null;
         }
 

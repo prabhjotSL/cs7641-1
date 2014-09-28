@@ -1,17 +1,13 @@
 package cs7641.assignment2;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class NeighborFunctions {
 
     enum ContinuousStep {
-        BIG_NEG,
-        BIG_POS,
-        MED_NEG,
-        MED_POS,
-        LIT_NEG,
-        LIT_POS
+        BIG,
+        MED,
+        LIT,
     }
     public static class ContinuousSpaceNeighbor implements NeighborFunction<List<Double>> {
         private final Random r = new Random();
@@ -21,8 +17,11 @@ public class NeighborFunctions {
             final int[] shuffled = shuffleIndexes(doubles.size());
 
             Iterator<List<Double>> it = new Iterator() {
+                Random r = new Random();
                 int index = 0;
-                ContinuousStep step = ContinuousStep.BIG_NEG;
+                ContinuousStep step = ContinuousStep.BIG;
+                int stepCount = 0;
+                boolean positive;
 
                 @Override
                 public boolean hasNext() {
@@ -36,18 +35,22 @@ public class NeighborFunctions {
                     double oldVal = neighbor.get(shuffled[index]);
                     double newVal = oldVal;
 
+                    if (stepCount == 0)
+                        positive = r.nextBoolean();
+                    else
+                        positive = !positive;
+
+                    stepCount = (stepCount + 1) % 2;
+
+                    int sign = positive ? 1 : -1;
+
                     switch (step) {
-                        case BIG_NEG: newVal -= 5; break;
-                        case BIG_POS: newVal += 5; break;
-                        case MED_NEG: newVal -= 1; break;
-                        case MED_POS: newVal += 1; break;
-                        case LIT_NEG: newVal -= 0.1; break;
-                        case LIT_POS: newVal += 0.1; break;
+                        case BIG: newVal = sign * 4.5; break;
+                        case MED: newVal = sign * 1.0; break;
+                        case LIT: newVal = sign * 0.1; break;
                     }
 
                     neighbor.set(shuffled[index], newVal);
-
-                    ContinuousStep[] test = ContinuousStep.values();
 
                     int m = step.ordinal()  + 1 % ContinuousStep.values().length - 1;
 
@@ -172,6 +175,21 @@ public class NeighborFunctions {
             List child = new ArrayList();
             for (int i = 0; i < m.size(); i++)
                 child.add(r.nextBoolean() ? m.get(i) : d.get(i));
+
+            return child;
+        }
+    }
+
+    public static class ListSingleCrossover implements Evolver.Breeder<List> {
+        final Random r = new Random();
+
+        @Override
+        public List breed(List m, List d) {
+            List child = new ArrayList();
+            int crossPoint = r.nextInt(d.size());
+
+            for (int i = 0; i < m.size(); i++)
+                child.add(i < crossPoint ? m.get(i) : d.get(i));
 
             return child;
         }

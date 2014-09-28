@@ -8,12 +8,12 @@ import weka.core.Instances;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ANNOptimizationProblem extends OptimizationProblem<List<Double>> {
+public class AnnProblem extends OptimizationProblem<List<Double>> {
 
     private MultilayerPerceptron mmp;
     private Instances test;
 
-    public ANNOptimizationProblem(MultilayerPerceptron mmp, Instances test) {
+    public AnnProblem(MultilayerPerceptron mmp, Instances test) {
         this.mmp = mmp;
         this.test = test;
     }
@@ -28,9 +28,8 @@ public class ANNOptimizationProblem extends OptimizationProblem<List<Double>> {
 
     public List<Double> getStartConfiguration() {
         List<Double> start = new ArrayList(mmp.numWeights());
-        double[] weights = mmp.getWeights();
-        for (int i = 0; i < weights.length; i++)
-            start.add(weights[i]);
+        for (int i = 0; i < mmp.numWeights(); i++)
+            start.add(Math.random() - 0.5);
 
         return start;
     }

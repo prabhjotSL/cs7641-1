@@ -5,11 +5,11 @@ import cs7641.assignment2.OptimizationProblem;
 import java.util.BitSet;
 import java.util.Random;
 
-public class MaximumCut extends OptimizationProblem<BitSet> {
+public class MaximumCutProblem extends OptimizationProblem<BitSet> {
     private Double[][] adjacency;
     private String desc;
 
-    public MaximumCut(Double[][] adjacency, String desc) {
+    public MaximumCutProblem(Double[][] adjacency, String desc) {
         this.adjacency = adjacency;
         this.desc = desc;
     }

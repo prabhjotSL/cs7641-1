@@ -5,11 +5,11 @@ import cs7641.assignment2.OptimizationProblem;
 import java.util.BitSet;
 import java.util.Random;
 
-public class FourPeaks extends OptimizationProblem<BitSet> {
+public class FourPeaksProblem extends OptimizationProblem<BitSet> {
     private int length;
     private int t;
 
-    public FourPeaks(int length, int t) {
+    public FourPeaksProblem(int length, int t) {
         this.length = length;
         this.t = t;
     }

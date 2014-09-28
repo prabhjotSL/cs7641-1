@@ -22,6 +22,8 @@ public class Mimicker extends RandomOptimizer<BitSet> {
     public Mimicker(int popSize, int keep) {
         this.popSize = popSize;
         this.keep = keep;
+
+        maxStale = 100;
     }
 
     public String toString() {

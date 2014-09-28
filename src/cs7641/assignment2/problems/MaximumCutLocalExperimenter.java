@@ -7,11 +7,11 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
-public class MaximumCutExperimenter extends Experiment<BitSet> {
+public class MaximumCutLocalExperimenter extends Experiment<BitSet> {
 
     public static void main(String[] args) throws Exception {
-        MaximumCutExperimenter exp = new MaximumCutExperimenter();
-        exp.run("max-cut", Integer.MAX_VALUE, 100, 25);
+        MaximumCutLocalExperimenter exp = new MaximumCutLocalExperimenter();
+        exp.run("max-cut", Integer.MAX_VALUE, 100);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MaximumCutExperimenter extends Experiment<BitSet> {
                     }
                 }
             }
-            problems.add(new MaximumCut(adjacency, "50%/uniform"));
+            problems.add(new MaximumCutProblem(adjacency, "50%/uniform"));
 
             Double[][] adjacency2 = new Double[nodes][nodes];
 
@@ -47,7 +47,7 @@ public class MaximumCutExperimenter extends Experiment<BitSet> {
                 }
             }
 
-            problems.add(new MaximumCut(adjacency2, "full/uniform"));
+            problems.add(new MaximumCutProblem(adjacency2, "full/uniform"));
 
             Double[][] adjacency3 = new Double[nodes][nodes];
 
@@ -60,7 +60,7 @@ public class MaximumCutExperimenter extends Experiment<BitSet> {
                 }
             }
 
-            problems.add(new MaximumCut(adjacency3, "somewhat"));
+            problems.add(new MaximumCutProblem(adjacency3, "somewhat"));
         }
 
         return problems;
@@ -82,31 +82,6 @@ public class MaximumCutExperimenter extends Experiment<BitSet> {
         optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.8));
         optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.9));
         optimizers.add(new Annealer(new NeighborFunctions.SingleBitFlipper(), 1000, 0.99));
-
-        optimizers.add(new Evolver(100, 50, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(100, 50, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(200, 50, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(200, 50, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(200, 100, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(200, 100, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(400, 100, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(400, 100, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(400, 200, new NeighborFunctions.UniformCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-        optimizers.add(new Evolver(400, 200, new NeighborFunctions.SingleCrossover(), new NeighborFunctions.SingleBitMutator(), 10));
-
-        optimizers.add(new Mimicker(100, 2));
-        optimizers.add(new Mimicker(100, 3));
-        optimizers.add(new Mimicker(100, 4));
-        optimizers.add(new Mimicker(100, 5));
-        optimizers.add(new Mimicker(200, 2));
-        optimizers.add(new Mimicker(200, 3));
-        optimizers.add(new Mimicker(200, 4));
-        optimizers.add(new Mimicker(200, 5));
-        optimizers.add(new Mimicker(200, 2));
-        optimizers.add(new Mimicker(200, 3));
-        optimizers.add(new Mimicker(200, 4));
-        optimizers.add(new Mimicker(200, 5));
-        optimizers.add(new Mimicker(200, 10));
 
         return optimizers;
     }

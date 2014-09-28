@@ -1,0 +1,2 @@
+Classifier	trainPctCorrect	testPctCorrect	trainTime	testTime
+MultilayerPerceptron	85.01	85.33	23.20	0.05
