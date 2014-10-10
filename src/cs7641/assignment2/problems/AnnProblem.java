@@ -11,11 +11,13 @@ import java.util.List;
 public class AnnProblem extends OptimizationProblem<List<Double>> {
 
     private MultilayerPerceptron mmp;
-    private Instances test;
+    private Instances sub;
+    private Instances full;
 
-    public AnnProblem(MultilayerPerceptron mmp, Instances test) {
-        this.mmp = mmp;
-        this.test = test;
+    public AnnProblem(MultilayerPerceptron mmp, Instances sub, Instances full) {
+        this.mmp  = mmp;
+        this.sub  = sub;
+        this.full = full;
     }
 
     public String[] getColumns() {
@@ -51,12 +53,31 @@ public class AnnProblem extends OptimizationProblem<List<Double>> {
             weights[i] = d.get(i);
         mmp.setWeights(weights);
         try {
-            Evaluation eval = new Evaluation(test);
-            eval.evaluateModel(mmp, test);
+            Evaluation eval = new Evaluation(sub);
+            eval.evaluateModel(mmp, sub);
             return eval.pctCorrect();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public boolean isSubsample() {
+        return true;
+    }
+
+    @Override
+    public double getFitnessOverFullData(List<Double> d) {
+         double[] weights = new double[d.size()];
+        for (int i = 0; i < d.size(); i++)
+            weights[i] = d.get(i);
+        mmp.setWeights(weights);
+        try {
+            Evaluation eval = new Evaluation(full);
+            eval.evaluateModel(mmp, full);
+            return eval.pctCorrect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

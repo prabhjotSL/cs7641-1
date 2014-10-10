@@ -16,14 +16,13 @@ public class Mimicker extends RandomOptimizer<BitSet> {
     private final int popSize;
     private final int keep;
 
-    private Distribution dist;
     private MIMIC mimic;
 
     public Mimicker(int popSize, int keep) {
         this.popSize = popSize;
         this.keep = keep;
 
-        maxStale = 100;
+        maxStale = 400;
     }
 
     public String toString() {
@@ -35,7 +34,7 @@ public class Mimicker extends RandomOptimizer<BitSet> {
         for (int i = 0; i < ranges.length; i++)
             ranges[i] = 2;
 
-        dist = new DiscreteDependencyTree(.1, ranges);
+        Distribution dist = new DiscreteDependencyTree(.15, ranges);
 
         EvaluationFunction func = new EvaluationFunction() {
             @Override

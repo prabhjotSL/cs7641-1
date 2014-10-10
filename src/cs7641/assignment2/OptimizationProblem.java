@@ -23,4 +23,12 @@ public abstract class OptimizationProblem<T> {
 
     public abstract String[] getColumns();
     public abstract String[] getData();
+
+    public boolean isSubsample() {
+        return false;
+    }
+
+    public double getFitnessOverFullData(T t) {
+        return 0.0;
+    }
 }

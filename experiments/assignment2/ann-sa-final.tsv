@@ -1,0 +1,2 @@
+numWeights	Invocations	NumFitness	AltNumFitness	FitnessCost	AltFitnessCost	MinFitness	MeanFitness	MaxFitness	StdDevFitness	AvgRuntime	Optimizer
+52	500	232005	58943	6.111374	1.552651	24.0	75.9	82.0	5.5	37.42	Annealer(temp=1000.0,cooling=0.95,neighbor=ContinuousSpaceNeighbor,its=628.4679447249679)

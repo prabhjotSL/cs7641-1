@@ -1,0 +1,2 @@
+numWeights	Invocations	NumFitness	AltNumFitness	FitnessCost	AltFitnessCost	MinFitness	MeanFitness	MaxFitness	StdDevFitness	AvgRuntime	Optimizer
+52	500	51248	25248	1.339351	0.659849	24.0	76.5	83.0	2.8	10.28	HillClimber(neighbor=ContinuousSpaceNeighbor)

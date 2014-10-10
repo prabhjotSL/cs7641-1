@@ -22,6 +22,10 @@ public abstract class Experiment<T> {
             if (!headerPrinted) {
                 String msg = StringUtils.join(Arrays.asList(problem.getColumns()), "\t");
                 msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Invocations", "NumFitness", "AltNumFitness", "FitnessCost", "AltFitnessCost", "MinFitness", "MeanFitness", "MaxFitness", "StdDevFitness", "AvgRuntime"}), "\t");
+
+                if (problem.isSubsample())
+                    msg += StringUtils.join(Arrays.asList(new String[]{"FullMin", "FullMean", "FullMax", "FullStdDev"}), "\t");
+
                 if (hasTarget)
                     msg += "\t" + StringUtils.join(Arrays.asList(new String[]{"Target", "Hits", "HitsRatio", "FitCalcsPerOpt", "AltFitCalcsPerOpt", "RuntimePerOpt"}), "\t");
 
@@ -44,9 +48,9 @@ public abstract class Experiment<T> {
                 long start = System.currentTimeMillis();
 
                 SummaryStatistics stats = new SummaryStatistics();
+                SummaryStatistics fullStats = new SummaryStatistics();
 
                 while (found < targetsSought && tried < maxTries) {
-                    System.out.println(tried);
                     problem.reset();
                     optimizer.setProblem(problem);
                     optimizer.reset();
@@ -68,6 +72,9 @@ public abstract class Experiment<T> {
                         } else if (optimizer.getBest().getValue() > problem.getTarget())
                             throw new RuntimeException("WTF");
                     }
+
+                    if (problem.isSubsample())
+                        fullStats.addValue(problem.getFitnessOverFullData(optimizer.getBest().getKey()));
                 }
 
                 long end = System.currentTimeMillis();
@@ -88,22 +95,29 @@ public abstract class Experiment<T> {
                 msg += String.format("%1.1f\t", stats.getMean());
                 msg += String.format("%1.1f\t", stats.getMax());
                 msg += String.format("%1.1f\t", stats.getStandardDeviation());
-                msg += String.format("%1.2f", avgRuntime);
+                msg += String.format("%1.2f\t", avgRuntime);
+
+                if (problem.isSubsample()) {
+                    msg += String.format("%1.1f\t", fullStats.getMin());
+                    msg += String.format("%1.1f\t", fullStats.getMean());
+                    msg += String.format("%1.1f\t", fullStats.getMax());
+                    msg += String.format("%1.1f\t", fullStats.getStandardDeviation());
+                }
 
                 if (hasTarget) {
                     Double secsPerOpt     = ((end - start) / 1000) / (double)found;
                     Double calcsPerOpt    = calcs / (double)found;
                     Double altCalcsPerOpt = altCalcs / (double)found;
 
-                    msg += "\t" + problem.getTarget();
-                    msg += "\t" + found + "\t";
+                    msg += problem.getTarget() + "\t";
+                    msg += found + "\t";
                     msg += String.format("%1.4f\t", found / (double)tried);
                     msg += String.format("%1.0f\t", calcsPerOpt);
                     msg += String.format("%1.0f\t", altCalcsPerOpt);
                     msg += String.format("%1.1f\t", secsPerOpt);
                 }
 
-                msg += "\t" + optimizer.toString();
+                msg += optimizer.toString();
 
                 msg += "\n";
 

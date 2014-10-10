@@ -1,0 +1,2 @@
+numWeights	Invocations	NumFitness	AltNumFitness	FitnessCost	AltFitnessCost	MinFitness	MeanFitness	MaxFitness	StdDevFitness	AvgRuntime	Optimizer
+52	10	983000	843000	1186.367038	1017.403268	78.2	82.9	84.6	2.5	9376.20	Evolver(size=1000,keep=250,breeder=ListUniformCrossover,toMutate=100,mutator=SingleWeightMutator)

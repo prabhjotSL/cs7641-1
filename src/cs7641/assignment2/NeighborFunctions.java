@@ -74,7 +74,7 @@ public class NeighborFunctions {
 
             Random r = new Random(System.currentTimeMillis());
 
-            int idx = (int) (Math.random() * weights.size());
+            int idx = r.nextInt(weights.size());
 
             List<Double> copy = new ArrayList(weights);
             copy.set(idx, copy.get(idx) + Math.random() * 2 - 1);

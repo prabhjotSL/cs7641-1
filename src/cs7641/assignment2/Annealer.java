@@ -12,6 +12,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
     private Pair<T, Double> current;
     protected int lastChange;
     private final double startTemp;
+    private boolean random = true;
 
     public Annealer(NeighborFunction<T> neighborFunction, double temp, double cooling) {
         this.neighborFunction = neighborFunction;
@@ -27,7 +28,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
 
     @Override
     public boolean stopOnStaleScore() {
-        return false;
+        return !random;
     }
 
     public String toString() {
@@ -45,7 +46,7 @@ public class Annealer<T> extends RandomOptimizer<T> {
 
         Iterator<T> neighbors = neighborFunction.getNeighbors(current.getKey());
 
-        boolean random = temp > 1E-11;
+        random = temp > 1E-11;
 
         while (neighbors.hasNext()) {
             T neighbor = neighbors.next();
