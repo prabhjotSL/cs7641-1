@@ -1,7 +1,7 @@
 package cs7641.assignment2;
 
-import com.sun.deploy.util.StringUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileWriter;
 import java.util.Arrays;

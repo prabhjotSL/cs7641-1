@@ -1,6 +1,6 @@
 package cs7641.assignment1;
 
-import com.sun.deploy.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import cs7641.ann.MultilayerPerceptron;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;

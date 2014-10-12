@@ -24,6 +24,10 @@ public class NeighborFunctions {
                 boolean positive;
 
                 @Override
+                public void remove() {
+                }
+
+                @Override
                 public boolean hasNext() {
                     return index < shuffled.length;
                 }
@@ -112,6 +116,10 @@ public class NeighborFunctions {
 
             Iterator<BitSet> it = new Iterator() {
                 private int count = 0;
+
+		@Override
+		public void remove() {
+                }
 
                 @Override
                 public boolean hasNext() {
